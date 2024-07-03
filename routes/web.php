@@ -54,17 +54,28 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/', function () {
-    // Rase Condition it's a term describe when two or more jobs try
-    //to update the same record in the database at the same time
-    // setuation when tow or more processes try to make change on the same resource at the same time
+// Route::get('/', function () {
+//     // Rase Condition it's a term describe when two or more jobs try
+//     //to update the same record in the database at the same time
+//     // setuation when tow or more processes try to make change on the same resource at the same time
 
-    \App\Jobs\Deploy::dispatch();
-    return view('welcome');
-});
+//     \App\Jobs\Deploy::dispatch();
+//     return view('welcome');
+// });
 
 
 // Redis Cunccurncy limiter give more flexibility we can set any limit we want
 
 
 //** How to cinfigure cuncerncy using cache or Redis above*/
+
+Route::get('/', function () {
+    \Illuminate\Support\Facades\DB::transaction(function() {
+        $user = \App\Models\User::create([...]);
+        
+        \App\Jobs\SendWelcomeEmail::dispatch($user)->afterCommit(); // will delay until transaction commit instead of before transaction commit
+    });     
+    \App\Jobs\Deploy::dispatch();
+
+    return view('welcome');
+});
