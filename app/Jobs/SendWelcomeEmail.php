@@ -14,8 +14,10 @@ class SendWelcomeEmail implements ShouldQueue
 
     // public $timeout = 1; // usefull when we want to prevent our job to getting stick with third part lib or api not responding
 
-    public $tries = 3;  // number of retry before consider it complete failure
+    // public $tries = -1;  // number of retry before consider it complete failure
 
+    // wait between fail job before rety=ry again
+    // public $backoff = 2;
     /**
      * Create a new job instance.
      */
@@ -29,13 +31,13 @@ class SendWelcomeEmail implements ShouldQueue
      */
     public function handle(): void
     {
-        throw new \Exception('Failed!'); // to semlute falure
+        // throw new \Exception('Failed!'); // to semlute falure
         sleep(3);
         info('Hello');
     }
 
-    public function retryUntil()
-    {
-        return now()->addMinutes(5); // retry after 5 minutes
-    }
+    // public function retryUntil()
+    // {
+    //     return now()->addMinutes(); // retry after 5 minutes
+    // }
 }
